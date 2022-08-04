@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { createContext, useState } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { DetailPage } from './pages/DetailPage'
+import { HomePage } from './pages/HomePage'
+import { Characters } from './types/types'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+type ContextType = {
+  data: Characters
+  setData: React.Dispatch<React.SetStateAction<Characters>>
 }
 
-export default App;
+export const AppContext = createContext<ContextType>({
+  data: [],
+  setData: () => {},
+})
+
+export const App = () => {
+  const [data, setData] = useState<Characters>([])
+
+  return (
+    <BrowserRouter>
+      <AppContext.Provider value={{ data, setData }}>
+        <Routes>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/:title' element={<DetailPage />} />
+        </Routes>
+      </AppContext.Provider>
+    </BrowserRouter>
+  )
+}
